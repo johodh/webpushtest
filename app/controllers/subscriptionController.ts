@@ -4,6 +4,7 @@ import webpush, { SendResult } from 'web-push';
 
 export const post = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
+    console.log('SUBSCRIPTION REQUEST')
     const subscription = req.body;
 
     const newSubscription = await subscriptionRepository.create(subscription);
@@ -21,6 +22,7 @@ export const remove = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
+    console.log('REMOVE REQUEST')
     const endpoint: string = req.query.endpoint?.toString();
     if (!endpoint) {
       res.sendStatus(400);
@@ -44,6 +46,7 @@ export const broadcast = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
+    console.log('BROADCAST REQUEST')
     const notification = { title: 'Hey, this is a push notification!' };
 
     const subscriptions = await subscriptionRepository.getAll();

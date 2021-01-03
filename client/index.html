@@ -1,11 +1,65 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Hello World</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="format-detection" content="telephone=no">
+  <title>QuantityInput.js</title>
+  <meta name="description" content="Test the quantity inputs" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.bundle.min.js"></script>
+  <link rel="manifest"  href="/manifest.json">
+<style>
+.container { 
+	display: grid; 
+	grid-gap: 20px 20px; 
+	grid-template-columns: 0.5fr 0.5fr;
+	grid-template-rows: 128px;
+	margin: 2rem auto;
+	max-width: 1200px; 
+	width: 90%
+}
+.grid-item-2 { 
+	font-size: 80px; 
+	font-weight: bold;
+	position: relative;
+}
+.grid-item-2 p {
+	position: absolute;
+	margin: 0;
+	top: 50%; 
+	transform: translate(0, -50%);
+	left: 50%; 
+}
+.grid-item-3 { 
+	grid-column-start: 1;
+	grid-column-end: 3;
+}
+
+</style>
+<link href="style.css" rel="stylesheet" type="text/css" /> 
 </head>
 <body>
-  <h1>Push notification center</h1>
+	<div class="container">
+		<section class="grid-item grid-item-1">
+<form>
+    <fieldset data-quantity>
+      <legend>Set alarm input</legend>
+	  <button type="button" id="down" title="Down" class="sub">Down</button>
+	  <input type="number" id="quantity" pattern="[0-9]+" value="0">
+	  <button type="button" id="up" title="Up" class="add">Up</button>
+    </fieldset>
+    </form>
+		</section>
+		<section id="tempset" class="grid-item grid-item-2"><p>22</p></section>
+	<section class="grid-item grid-item-3" style="height:50vh">
+		<!--  <div class="chart-container" style="position: relative; height:40vh; width:80vw"> -->
+		<div class="chart-container">
+  <canvas id="chart"></canvas>
+  </div>
+	</section>
+	</div>
+<h1>Push notification center</h1>
   <h3 id="subscribed">You are subscribed</h3>
   <h3 id="unsubscribed">You are not subscribed</h3>
   <button onclick="broadcast()">Send push notification</button>
@@ -13,4 +67,114 @@
   <button onclick="unsubscribe()">Unsubscribe</button>
   <script src="index.js"></script>
 </body>
+  <script>
+
+var input = document.getElementById("quantity");
+
+function change_quantity(change) {
+    let quantity = Number(input.value);
+    if (isNaN(quantity)) quantity = 1;
+    quantity += change;
+    quantity = Math.max(quantity, 1);
+    input.value = quantity;
+  }
+
+var ctx = document.getElementById('chart').getContext('2d');
+var up = document.getElementById("up");
+var down = document.getElementById("down");
+var section = document.getElementById("tempset");
+var alarmSet = 0
+
+up.addEventListener('click', () => change_quantity(1)); 
+down.addEventListener('click', () => change_quantity(-1));
+input.addEventListener("keydown", function(event) {
+	if (event.keyCode === 13) {
+ 	event.preventDefault();
+	alarmSet = input.value;
+	console.log(alarmSet);
+ 	}
+	return false;
+ });
+
+var data = {
+        datasets: [{
+            label: 'Probe 1',
+           // backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: []
+	}, {
+	    label: 'Alarm',
+	    borderColor: 'rgb(99, 132, 255)',
+	    data: []
+	}]
+    }
+
+var myLineChart = new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: {
+	maintainAspectRatio: 'false',
+        scales: {
+            xAxes: [{
+                type: 'time',
+                time: {
+                    unit: 'minute'
+                },
+		ticks: {
+		    max: new Date()+1*60*1000,
+		    min: new Date(), 
+		}
+            }],
+	    yAxes: [{
+		ticks: {
+		    beginAtZero: 'true'
+		}
+	    }]
+        }
+    }
+});
+
+setInterval(function() {
+	alarm = {x: new Date(), y: Number(alarmSet)}   
+	myLineChart.data.datasets[1].data.push(alarm)
+	myLineChart.update();	
+}, 1000)
+
+var server = "ws://" + window.location.hostname + ":8080/";
+
+
+function connectSocket() {
+  var socket = new WebSocket(server);
+
+  var startDate = new Date();
+  socket.onmessage = function(m) {
+	var currentDate = new Date();
+	data = {x: currentDate, y: m.data}; 
+	myLineChart.data.datasets[0].data.push(data)
+	  if (currentDate-startDate > 30*1000) {
+	myLineChart.options.scales.xAxes[0].ticks.min = new Date()-30*1000;
+	  }
+	myLineChart.update();
+	  if (alarmSet < m.data) { 
+	  var color = "red";
+	  } else { 
+		  var color = "black";
+	  }
+	section.innerHTML = '<p style="color:'+color+'">' +Math.round(m.data,1)+ '</p>';
+      }
+
+  socket.onerror = function(e) {
+    socket.close();
+  }
+
+  socket.onclose = function(e) {
+    setTimeout(connectSocket(), 1000);
+  }
+  
+}
+
+connectSocket();
+
+</script>
+
 </html>

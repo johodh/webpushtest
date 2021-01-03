@@ -1,11 +1,13 @@
 // Check if service workers are supported
+console.log('Is service workers supported?')
 if ('serviceWorker' in navigator) {
+	console.log('yes!');
   navigator.serviceWorker.register('/sw.js', {
     scope: '/',
   });
 }
 
-const publicVapidKey = 'BMrfFtMtL9IWl9vchDbbbYzJlbQwplyZ_fbv8Pei8gPNna_Dr1O-Ng7U7fy0LLqz5RKIxEytTIzyk6TLrcKbN30';
+const publicVapidKey = 'BL9Ej0g_bDYS0C3sLbdiYD2ErYANPI4ukcjOvnigT0gV4wnVJG1F0r1HdAJ9bd4Mo2N_wk3FQNdEBTxv6WI3hdA';
 
 const urlBase64ToUint8Array = (base64String) => {
   const padding = '='.repeat((4 - base64String.length % 4) % 4);
