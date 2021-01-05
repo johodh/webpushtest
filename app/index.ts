@@ -16,7 +16,7 @@ initializeRoutes(app);
 webpush();
 
 // start the Express server
-app.listen(port, () => {
+app.listen(port, 'localhost', () => {
   // eslint-disable-next-line no-console
   console.log(`server started at http://localhost:${port}`);
 });
