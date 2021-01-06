@@ -5,43 +5,27 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="format-detection" content="telephone=no">
-  <title>QuantityInput.js</title>
-  <meta name="description" content="Test the quantity inputs" />
+  <title>ThermoDudePanel</title>
+  <meta name="description" content="..." />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.bundle.min.js"></script>
   <link rel="manifest"  href="/manifest.json">
-<style>
-.container { 
-	display: grid; 
-	grid-gap: 20px 20px; 
-	grid-template-columns: 0.5fr 0.5fr;
-	grid-template-rows: 128px;
-	margin: 2rem auto;
-	max-width: 1200px; 
-	width: 90%
-}
-.grid-item-2 { 
-	font-size: 80px; 
-	font-weight: bold;
-	position: relative;
-}
-.grid-item-2 p {
-	position: absolute;
-	margin: 0;
-	top: 50%; 
-	transform: translate(0, -50%);
-	left: 50%; 
-}
-.grid-item-3 { 
-	grid-column-start: 1;
-	grid-column-end: 3;
-}
-
-</style>
-<link href="style.css" rel="stylesheet" type="text/css" /> 
+  <link href="containers.css" rel="stylesheet" type="text/css" />
+  <link href="style.css" rel="stylesheet" type="text/css" /> 
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
 </head>
+
 <body>
-	<div class="container">
-		<section class="grid-item grid-item-1">
+
+<div class="tab">
+  <button class="tablinks" onclick="openCity(event, 'London')">London</button>
+  <button class="tablinks" onclick="openCity(event, 'Paris')">Paris</button>
+  <button class="tablinks" onclick="openCity(event, 'Tokyo')">Tokyo</button>
+</div>
+
+<div id="London" class="tabcontent">
+  <h3>Temperatures</h3>
+<div class="container">
+<section class="grid-item grid-item-1">
 <form>
     <fieldset data-quantity>
       <legend>Set alarm input</legend>
@@ -59,13 +43,22 @@
   </div>
 	</section>
 	</div>
+</div>
+<div id="Paris" class="tabcontent">
+  <h3>Chart</h3>
+  <p>Paris is the capital of France.</p> 
+</div>
+<div id="Tokyo" class="tabcontent">
+  <h3>Settings</h3>
 <h1>Push notification center</h1>
   <h3 id="subscribed">You are subscribed</h3>
   <h3 id="unsubscribed">You are not subscribed</h3>
   <button onclick="broadcast()">Send push notification</button>
-  <button onclick="subscribe()">Subscribe</div>
+  <button onclick="subscribe()">Subscribe</button>
   <button onclick="unsubscribe()">Unsubscribe</button>
   <script src="index.js"></script>
+</div>
+<script src="tabs.js"></script>
 </body>
   <script>
 
@@ -140,7 +133,7 @@ setInterval(function() {
 	myLineChart.update();	
 }, 1000)
 
-var server = "ws://" + window.location.hostname + ":8080/";
+var server = "wss://" + window.location.hostname + "/wsapp";
 
 
 function connectSocket() {
