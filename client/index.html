@@ -16,16 +16,12 @@
 
 <body>
 
-<div class="tab">
-  <button class="tablinks" onclick="openCity(event, 'London')">London</button>
-  <button class="tablinks" onclick="openCity(event, 'Paris')">Paris</button>
-  <button class="tablinks" onclick="openCity(event, 'Tokyo')">Tokyo</button>
-</div>
 
 <div id="London" class="tabcontent">
-  <h3>Temperatures</h3>
-<div class="container">
-<section class="grid-item grid-item-1">
+  <h3>Current</h3>
+		<br><section id="tempset" class="grid-item grid-item-2"><p>22</p></section>
+<br><h3>Alarm</h3>
+		<section class="grid-item grid-item-2">
 <form>
     <fieldset data-quantity>
       <legend>Set alarm input</legend>
@@ -34,19 +30,12 @@
 	  <button type="button" id="up" title="Up" class="add">Up</button>
     </fieldset>
     </form>
-		</section>
-		<section id="tempset" class="grid-item grid-item-2"><p>22</p></section>
-	<section class="grid-item grid-item-3" style="height:50vh">
-		<!--  <div class="chart-container" style="position: relative; height:40vh; width:80vw"> -->
-		<div class="chart-container">
-  <canvas id="chart"></canvas>
-  </div>
-	</section>
-	</div>
+</section>
 </div>
 <div id="Paris" class="tabcontent">
-  <h3>Chart</h3>
-  <p>Paris is the capital of France.</p> 
+   <div class="chart-container">
+  <canvas id="chart"></canvas>
+  </div>
 </div>
 <div id="Tokyo" class="tabcontent">
   <h3>Settings</h3>
@@ -59,6 +48,11 @@
   <script src="index.js"></script>
 </div>
 <script src="tabs.js"></script>
+<div class="tab">
+  <button class="tablinks" onclick="openCity(event, 'London')"><img src="notifications-24px.svg"></img></button>
+  <button class="tablinks" onclick="openCity(event, 'Paris')"><img src="timeline-24px.svg"></img></button>
+  <button class="tablinks" onclick="openCity(event, 'Tokyo')"><img src="settings-24px.svg"></img></button>
+</div>
 </body>
   <script>
 

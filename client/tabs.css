@@ -2,6 +2,8 @@ body {font-family: Arial;}
 
 /* Style the tab */
 .tab {
+  position: fixed;
+  bottom: 0px;
   overflow: hidden;
   border: 1px solid #ccc;
   background-color: #f1f1f1;
